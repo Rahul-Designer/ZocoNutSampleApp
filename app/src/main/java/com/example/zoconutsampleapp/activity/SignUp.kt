@@ -12,6 +12,7 @@ import com.example.zoconutsampleapp.databinding.ActivitySignUpBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -35,7 +36,7 @@ class SignUp : AppCompatActivity() {
             val email = binding.emailEdt.text.toString()
             val password = binding.passwordEdt.text.toString()
             val confirmPassword = binding.confirmPasswordEdt.text.toString()
-            if (name.isEmpty()) binding.emailEdt.error = "Please enter name"
+            if (name.isEmpty()) binding.nameEdt.error = "Please enter name"
             if (email.isEmpty()) binding.emailEdt.error = "Please enter email"
             if (password.isEmpty()) binding.passwordEdt.error = "Please enter password"
             if (password != confirmPassword) binding.passwordEdt.error =
@@ -57,7 +58,7 @@ class SignUp : AppCompatActivity() {
                         }
                     }
             } else {
-                binding.passwordEdt.error = "Please enter valid password "
+                binding.passwordEdt.error = "Password must contain at least 8 characters, including UPPER/lowercase, special character and numbers "
             }
         }
 
@@ -65,8 +66,14 @@ class SignUp : AppCompatActivity() {
             signInGoogle()
         }
 
-    }
+        // Google Sign Option
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+    }
 
     // Google SignUp Code
     private fun signInGoogle() {

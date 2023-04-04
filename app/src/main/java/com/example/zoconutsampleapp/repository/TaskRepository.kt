@@ -1,28 +1,33 @@
 package com.example.zoconutsampleapp.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.example.zoconutsampleapp.data.Task
 import com.example.zoconutsampleapp.data.TaskDao
+import com.example.zoconutsampleapp.data.TaskDatabase
 
-class TaskRepository(private val taskDao: TaskDao) {
-
+class TaskRepository(
+    private val taskDatabase: TaskDatabase,
+    private val applicationContext: Context
+) {
 
     fun getTask(): LiveData<List<Task>> {
-        return taskDao.getTask()
+        return taskDatabase.taskDao().getTask()
     }
 
     suspend fun insertTask(task: Task) {
-        taskDao.insertTask(task)
+        taskDatabase.taskDao().insertTask(task)
     }
+
     suspend fun updateTask(task: Task) {
-        taskDao.updateTask(task)
+        taskDatabase.taskDao().updateTask(task)
     }
 
     suspend fun updateTaskStatus(task: Task) {
-        taskDao.updateTaskStatus(task)
+        taskDatabase.taskDao().updateTaskStatus(task)
     }
 
     suspend fun deleteTask(task: Task) {
-        taskDao.deleteTask(task)
+        taskDatabase.taskDao().deleteTask(task)
     }
 }

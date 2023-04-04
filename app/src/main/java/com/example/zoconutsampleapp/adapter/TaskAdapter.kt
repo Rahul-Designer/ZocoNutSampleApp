@@ -28,8 +28,8 @@ class TaskAdapter(private val context: Context, private val onClickItem: OnClick
         }
 
         fun bind(info: Task) {
-            taskStatus.isChecked = info.status
-            taskDescription.text = info.task
+            taskStatus.isChecked = info.status == true
+            taskDescription.text = info.task_description
 
         }
     }
@@ -61,7 +61,7 @@ class TaskAdapter(private val context: Context, private val onClickItem: OnClick
                         edtAddTask = mAlterDialog.findViewById(R.id.updateTask)
                         edtAddTask.setOnClickListener {
                             mAlterDialog.dismiss()
-                            arrTask.get(position).task = edtTaskDes.text.toString()
+                            arrTask.get(position).task_description = edtTaskDes.text.toString()
                             onClickItem.updateTask(arrTask.get(position),position)
                         }
                     }
