@@ -1,5 +1,5 @@
-# NewsApp
-### Android Developer News APP Project.
+# ZocoNutSample App
+
 #### Note: To run the app you have on the internet connectivity
 
 #### Demo Images
