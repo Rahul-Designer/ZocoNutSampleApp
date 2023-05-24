@@ -12,29 +12,33 @@ SignUp Screen
 
 <img src="SignUp Screen.jpg" width="40%">
 
-Home Screen (This data show using Firebase Sync Functionality)
+Home Screen 
 
-<img src="Firebase Sync task.jpg" width="40%">
+<img src="Home Screen.jpg" width="40%">
 
-Add task Screen
+Home Screen (ContactList Button in Home Screen)
 
-<img src="Add task Dialog.jpg" width="40%">
+<img src="ContactList Button.jpg" width="40%">
 
-Edit task Screen
+Home Screen (QR Scanner Button in Home Screen)
 
-<img src="Edit task dialog.jpg" width="40%">
+<img src="QR Scanner.jpg" width="40%">
 
-PopMenu Screen
+ContactList Screen (This data show using Firebase Sync Functionality)
 
-<img src="Popmenu.jpg" width="40%">
+<img src="ContactList Screen.jpg" width="40%">
+
+QR Screen
+
+<img src="QR Screen.jpg" width="40%">
 
 Logout Option Screen
 
-<img src="Logout Option.jpg" width="40%">
+<img src="Logout.jpg" width="40%">
 
 
 #### Libraries
 - [Firebase](https://firebase.google.com/) For User Authentication & Google Sync Functionality
-- [Room](https://developer.android.com/training/data-storage/room) For Offline Local Database
+- [Glide](https://bumptech.github.io/glide/doc/download-setup.html) For Show Image From URL
 - [Google gson](https://github.com/google/gson) For parsing JSON data
 - [Coroutines](https://developer.android.com/kotlin/coroutines) For manage long-running tasks

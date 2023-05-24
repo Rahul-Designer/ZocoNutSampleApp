@@ -138,7 +138,6 @@ class HomeActivity : AppCompatActivity() {
         val country = binding.countryField.editText?.text.toString()
         val myText =
             "$userId\n$profileImg\n$name\n$email\n$phoneNumber\n$githubLink\n$listOfSkill\n$city\n$country"
-        Toast.makeText(this, imageUrl, Toast.LENGTH_LONG).show()
         //BitMatrix class to encode entered text and set Width & Height
         val mMatrix: BitMatrix =
             multiFormatWriter.encode(myText, BarcodeFormat.QR_CODE, 200, 200)
