@@ -195,7 +195,7 @@
                 android:layout_marginLeft="5dp"
                 android:textStyle="bold"
                 android:text="Sign Up here"
-                android:textColor="#0B0474" />
+                android:textColor="@color/color1" />
         </LinearLayout>
 
 

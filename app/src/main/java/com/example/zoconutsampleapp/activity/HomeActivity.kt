@@ -1,84 +1,109 @@
 package com.example.zoconutsampleapp.activity
 
-import android.app.AlertDialog
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import androidx.lifecycle.Observer
+import android.provider.MediaStore
+import android.view.*
+import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.zoconutsampleapp.R
-import com.example.zoconutsampleapp.TaskApplication
-import com.example.zoconutsampleapp.adapter.TaskAdapter
-import com.example.zoconutsampleapp.data.Task
 import com.example.zoconutsampleapp.databinding.ActivityHomeBinding
-import com.example.zoconutsampleapp.model.TaskViewModel
-import com.example.zoconutsampleapp.model.TaskViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
+import com.google.zxing.common.BitMatrix
+import com.journeyapps.barcodescanner.BarcodeEncoder
+import java.util.*
 
 
-class HomeActivity : AppCompatActivity(), TaskAdapter.OnClickItem {
+class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding
     lateinit var firebaseAuth: FirebaseAuth
-    lateinit var taskViewModel: TaskViewModel
-    lateinit var adapter: TaskAdapter
-    private lateinit var taskDes: EditText
-    private lateinit var addTask: Button
-    private lateinit var dbref: DatabaseReference
+    private lateinit var storageref: FirebaseStorage
+    private val multiFormatWriter = MultiFormatWriter()
+    lateinit var mBitmap: Bitmap
+    private lateinit var uri: Uri
+    private lateinit var imageUrl: String
+    var click: Boolean = false
+
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         firebaseAuth = FirebaseAuth.getInstance()
-        setSupportActionBar(binding.toolbar)
+        storageref = FirebaseStorage.getInstance()
 
-        binding.shimmer.startShimmer()
-        binding.homeRecyclerview.layoutManager = LinearLayoutManager(this)
-        binding.homeRecyclerview.setHasFixedSize(true)
-        adapter = TaskAdapter(this, this)
-        binding.homeRecyclerview.adapter = adapter
+        binding.qrScanner.setOnClickListener {
+            startActivity(Intent(it.context, QRScannerActivity::class.java))
+        }
 
+        binding.contact.setOnClickListener {
+            startActivity(Intent(it.context, ContactActivity::class.java))
+        }
+        val galleryImage = registerForActivityResult(ActivityResultContracts.GetContent(),
+            ActivityResultCallback {
+                binding.profileImg.setImageURI(it)
+                uri = it
+            })
 
-        val repository = (application as TaskApplication).taskRepository
-        taskViewModel =
-            ViewModelProvider(this, TaskViewModelFactory(repository)).get(TaskViewModel::class.java)
+        binding.profileImg.setOnClickListener {
+            click = true
+            galleryImage.launch("image/*")
+        }
 
-        taskViewModel.getTask().observe(this, Observer {
-            Handler().postDelayed({
-                binding.shimmer.stopShimmer()
-                binding.shimmer.visibility = View.GONE
-                binding.homeRecyclerview.visibility = View.VISIBLE
+        binding.qrGenerateBtn.setOnClickListener {
+            try {
+                if (click) {
+                    val progressDialog = ProgressDialog(this@HomeActivity)
+                    progressDialog.setTitle("Please Wait..")
+                    progressDialog.setMessage("Application is loading, please wait")
+                    progressDialog.show()
+                    val reference =
+                        storageref.reference.child("Profile").child(Date().time.toString())
+                    reference.putFile(uri).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            reference.downloadUrl.addOnSuccessListener {
+                                progressDialog.dismiss()
+                                imageUrl = it.toString()
+                                generateQR()
+                            }
 
-            }, 1000)
-
-            adapter.updateUserList(it)
-
-        })
-
-        binding.add.setOnClickListener {
-            val mDialogView = LayoutInflater.from(this).inflate(R.layout.add_new_task, null)
-            val builder = AlertDialog.Builder(this)
-                .setView(mDialogView)
-            val mAlterDialog = builder.show()
-            taskDes = mAlterDialog.findViewById(R.id.taskName)
-            addTask = mAlterDialog.findViewById(R.id.addTask)
-            addTask.setOnClickListener {
-                mAlterDialog.dismiss()
-                val taskName = taskDes.text.toString()
-                taskViewModel.insertTask(Task(null, false, taskName))
-
+                        }
+                    }
+                }
+                else{
+                    Snackbar.make(it,"Please Upload Profile Picture",Snackbar.LENGTH_SHORT).show()
+                }
+            } catch (e: WriterException) {
+                e.printStackTrace()
             }
         }
 
-        getFirebaseData()
+        binding.shareQrBtn.setOnClickListener {
+            val path = MediaStore.Images.Media.insertImage(
+                contentResolver,
+                mBitmap,
+                "Image Description",
+                null
+            )
+            val uri = Uri.parse(path)
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "image/*"
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            startActivity(Intent.createChooser(intent, "Share Image"))
+        }
+
+//        getFirebaseData()
     }
 
 
@@ -101,39 +126,24 @@ class HomeActivity : AppCompatActivity(), TaskAdapter.OnClickItem {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun deleteRow(task: Task, position: Int) {
-        taskViewModel.deleteTask(task)
-        adapter.notifyItemChanged(position)
-    }
-
-    override fun updateStatus(task: Task, position: Int) {
-        taskViewModel.updateTaskStatus(task)
-        adapter.notifyItemChanged(position)
-    }
-
-    override fun updateTask(task: Task, position: Int) {
-        taskViewModel.updateTask(task)
-        adapter.notifyItemChanged(position)
-    }
-
-    private fun getFirebaseData() {
-        dbref = FirebaseDatabase.getInstance().getReference("tasks")
-
-        dbref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) {
-
-                        val task = userSnapshot.getValue(Task::class.java)
-                        taskViewModel.insertTask(task!!)
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
+    private fun generateQR() {
+        val userId = firebaseAuth.currentUser?.uid
+        val profileImg = imageUrl
+        val name = binding.nameField.editText?.text.toString()
+        val email = binding.emailField.editText?.text.toString()
+        val phoneNumber = binding.phoneNumberField.editText?.text.toString()
+        val githubLink = binding.githubProfileField.editText?.text.toString()
+        val listOfSkill = binding.skillField.editText?.text.toString()
+        val city = binding.cityField.editText?.text.toString()
+        val country = binding.countryField.editText?.text.toString()
+        val myText =
+            "$userId\n$profileImg\n$name\n$email\n$phoneNumber\n$githubLink\n$listOfSkill\n$city\n$country"
+        Toast.makeText(this, imageUrl, Toast.LENGTH_LONG).show()
+        //BitMatrix class to encode entered text and set Width & Height
+        val mMatrix: BitMatrix =
+            multiFormatWriter.encode(myText, BarcodeFormat.QR_CODE, 200, 200)
+        val mEncoder = BarcodeEncoder()
+        mBitmap = mEncoder.createBitmap(mMatrix) //creating bitmap of code
+        binding.idIVQrcode.setImageBitmap(mBitmap) //Setting generated QR code to imageView
     }
 }

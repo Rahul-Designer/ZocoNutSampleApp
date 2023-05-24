@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,13 +53,13 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="12dp"
-            android:drawableLeft="@drawable/name_img"
             android:background="@drawable/email_edt_bg"
+            android:drawableLeft="@drawable/name_img"
             android:ems="15"
+            android:gravity="center_vertical"
             android:hint="enter your full name"
             android:inputType="text"
             android:paddingStart="10dp"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_txt"
@@ -70,13 +71,13 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="12dp"
-            android:drawableLeft="@drawable/email_img"
             android:background="@drawable/email_edt_bg"
+            android:drawableLeft="@drawable/email_img"
             android:ems="15"
+            android:gravity="center_vertical"
             android:hint="enter your email"
             android:inputType="textEmailAddress"
             android:paddingStart="10dp"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,34 +89,36 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="12dp"
-            android:drawableLeft="@drawable/password_img"
             android:background="@drawable/email_edt_bg"
+            android:drawableLeft="@drawable/password_img"
             android:ems="15"
+            android:gravity="center_vertical"
             android:hint="password"
             android:inputType="textPassword"
             android:paddingStart="10dp"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email_edt" />
+
         <EditText
             android:id="@+id/confirm_password_edt"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="12dp"
-            android:drawableLeft="@drawable/password_img"
             android:background="@drawable/email_edt_bg"
+            android:drawableLeft="@drawable/password_img"
             android:ems="15"
+            android:gravity="center_vertical"
             android:hint="confirm password"
             android:inputType="textPassword"
             android:paddingStart="10dp"
-            android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_edt" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sign_up_btn"
             android:layout_width="match_parent"
@@ -172,16 +175,16 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/google_btn_bg"
+            android:drawableStart="@drawable/google_icon"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="25dp"
             android:text="Sign Up with Google"
             android:textAllCaps="false"
-            android:textSize="18sp"
-            android:drawableStart="@drawable/google_icon"
-            android:background="@drawable/google_btn_bg"
-            android:gravity="center_vertical"
             android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingHorizontal="25dp"
-            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/otherOption_txt" />
@@ -189,28 +192,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@+id/google_sign_up_btn">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have account?"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sign_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:textStyle="bold"
                 android:text="Sign In"
-                android:textColor="#0B0474" />
+                android:textColor="@color/color1"
+                android:textStyle="bold" />
         </LinearLayout>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

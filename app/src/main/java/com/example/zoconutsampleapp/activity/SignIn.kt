@@ -26,6 +26,10 @@ class SignIn : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_in)
         firebaseAuth = FirebaseAuth.getInstance()
 
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
+
         binding.signUp.setOnClickListener {
             startActivity(Intent(this, SignUp::class.java))
             finish()

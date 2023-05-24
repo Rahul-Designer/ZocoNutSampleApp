@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="deleteColor">#F44336</color>
     <color name="editColor">#40B444</color>
+
+
+    <color name="color1">#0B0474</color>
+    <color name="color2">#AB6C63FF</color>
 </resources>
